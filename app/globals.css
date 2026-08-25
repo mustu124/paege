@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Space-separated RGB components (not hex/full color strings) —
+     required so Tailwind's opacity modifier (bg-cream/95, etc.) can
+     wrap these in rgb(var(--x) / <alpha-value>) per tailwind.config.ts.
+     A plain hex value here would silently break every /NN opacity
+     utility using these colors: Tailwind can't decompose an opaque
+     var() reference into RGB at build time, so it just emits no CSS
+     rule at all for that utility (no error — the class is simply a
+     no-op on the page). */
+
+  /* Warm off-white / cream background */
+  --color-cream: 247 243 236; /* #f7f3ec */
+  --color-cream-50: 253 251 248; /* #fdfbf8 */
+  --color-cream-100: 241 235 224; /* #f1ebe0 */
+
+  /* Deep maroon accent — matches the brand logo's background maroon.
+     Deepened from the earlier #6b1f2a to sit closer to that exact
+     reference rather than a generic "burgundy". */
+  --color-burgundy: 74 20 28; /* #4a141c */
+  --color-burgundy-50: 247 235 236; /* #f7ebec */
+  --color-burgundy-600: 92 26 36; /* #5c1a24 */
+  --color-burgundy-700: 66 16 23; /* #421017 */
+  --color-burgundy-800: 58 15 22; /* #3a0f16 */
+
+  /* "charcoal" is maroon, not black or neutral grey — the same hue as
+     --color-burgundy at different depths, so every place that used to
+     read as near-black (body text, borders, icons, admin UI) reads as
+     maroon instead, with 900 identical to the brand maroon itself.
+     Named "charcoal" only for historical/token-name continuity with
+     the rest of the codebase — nothing about it is actually charcoal. */
+  --color-charcoal: 92 28 36; /* #5c1c24 */
+  --color-charcoal-500: 150 75 85; /* #964b55 */
+  --color-charcoal-700: 115 40 50; /* #732832 */
+  --color-charcoal-900: 74 20 28; /* #4a141c — identical to --color-burgundy */
+
+  --color-border: 226 217 200; /* #e2d9c8 */
+}
+
+* {
+  border-color: rgb(var(--color-border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: rgb(var(--color-cream));
+  color: rgb(var(--color-charcoal-900));
+  font-feature-settings: "liga" 1, "kern" 1;
+}
+
+/* Editorial link underline: thin, offset, no default blue. */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -2px;
+  height: 1px;
+  background-color: currentColor;
+  transition: right 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.link-underline:hover::after {
+  right: 0;
+}
+
+::selection {
+  background-color: rgb(var(--color-burgundy));
+  color: rgb(var(--color-cream-50));
+}
