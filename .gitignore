@@ -17,9 +17,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# local env files — the .example variant is a template of placeholder
+# values only (safe, was previously committed), but keeping both env
+# files out of git entirely removes any temptation to ever paste a
+# real value into a tracked file.
 .env*.local
 .env
+.env.local.example
 
 # vercel
 .vercel
