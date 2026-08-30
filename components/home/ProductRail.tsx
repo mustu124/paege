@@ -7,16 +7,20 @@ import { ProductCard } from "@/components/product/ProductCard";
 
 interface ProductRailProps {
   title: string;
+  subtitle?: string;
   viewAllHref: string;
   products: ProductSummary[];
 }
 
-export function ProductRail({ title, viewAllHref, products }: ProductRailProps) {
+export function ProductRail({ title, subtitle, viewAllHref, products }: ProductRailProps) {
   return (
     <section className="py-16 md:py-24">
       <Container>
         <div className="mb-8 flex items-end justify-between">
-          <h2 className="font-serif text-3xl italic text-charcoal-900 md:text-4xl">{title}</h2>
+          <div>
+            <h2 className="font-serif text-3xl italic text-charcoal-900 md:text-4xl">{title}</h2>
+            {subtitle && <p className="mt-2 font-sans text-sm text-charcoal-500">{subtitle}</p>}
+          </div>
           <Link
             href={viewAllHref}
             className="link-underline hidden font-sans text-xs uppercase tracking-wider text-charcoal-700 md:block"

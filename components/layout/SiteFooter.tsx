@@ -28,6 +28,9 @@ export function SiteFooter() {
 
         <div className="flex flex-col gap-3">
           <p className="font-sans text-xs uppercase tracking-wider text-charcoal-900">Support</p>
+          <Link href="/about" className="font-sans text-sm text-charcoal-500 hover:text-charcoal-900">
+            About Paege
+          </Link>
           <span className="font-sans text-sm text-charcoal-500">Shipping &amp; Returns</span>
           <span className="font-sans text-sm text-charcoal-500">Contact</span>
         </div>

@@ -18,12 +18,10 @@ export function BrandStory() {
         <div className="md:order-1">
           <p className="font-sans text-xs uppercase tracking-widest text-charcoal-500">Our Approach</p>
           <h2 className="mt-3 font-serif text-3xl italic text-charcoal-900 md:text-4xl">
-            Considered, not disposable
+            Less, but better.
           </h2>
           <p className="mt-5 max-w-md font-sans text-sm leading-relaxed text-charcoal-700">
-            Every PAEGE piece is designed to be worn again and again — quiet
-            silhouettes, honest fabrics, and details built to last beyond a
-            single season.
+            We make fewer pieces, with more thought behind them.
           </p>
         </div>
       </Container>

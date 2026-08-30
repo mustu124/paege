@@ -4,9 +4,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
-import type { Category } from "@/lib/data/categories";
+const NAV_LINKS = [
+  { href: "/shop", label: "Find Yours" },
+  { href: "/shop", label: "The Edit" },
+  { href: "/shop?filter=new-arrivals", label: "The New Edit" },
+  { href: "/shop?filter=bestsellers", label: "The Paege Favourites" },
+  { href: "/about", label: "About Paege" },
+];
 
-export function MobileNav({ categories }: { categories: Category[] }) {
+export function MobileNav() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -56,41 +62,17 @@ export function MobileNav({ categories }: { categories: Category[] }) {
         }`}
       >
         <div className="flex flex-col divide-y divide-border px-6">
-          <Link
-            href="/shop"
-            tabIndex={open ? 0 : -1}
-            onClick={() => setOpen(false)}
-            className="py-4 font-sans text-sm uppercase tracking-wider text-charcoal-900"
-          >
-            All
-          </Link>
-          {categories.map((category) => (
+          {NAV_LINKS.map((link) => (
             <Link
-              key={category.id}
-              href={`/shop?category=${category.slug}`}
+              key={link.label}
+              href={link.href}
               tabIndex={open ? 0 : -1}
               onClick={() => setOpen(false)}
               className="py-4 font-sans text-sm uppercase tracking-wider text-charcoal-900"
             >
-              {category.name}
+              {link.label}
             </Link>
           ))}
-          <Link
-            href="/shop?filter=new-arrivals"
-            tabIndex={open ? 0 : -1}
-            onClick={() => setOpen(false)}
-            className="py-4 font-sans text-sm uppercase tracking-wider text-charcoal-900"
-          >
-            New Arrivals
-          </Link>
-          <Link
-            href="/shop?filter=bestsellers"
-            tabIndex={open ? 0 : -1}
-            onClick={() => setOpen(false)}
-            className="py-4 font-sans text-sm uppercase tracking-wider text-charcoal-900"
-          >
-            Bestsellers
-          </Link>
         </div>
       </nav>
     </div>

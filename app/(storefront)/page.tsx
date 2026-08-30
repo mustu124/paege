@@ -4,8 +4,10 @@ import { getBestsellers, getNewArrivals } from "@/lib/data/products";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { CategoryDiscovery } from "@/components/home/CategoryDiscovery";
 import { ProductRail } from "@/components/home/ProductRail";
+import { PaegeStatement } from "@/components/home/PaegeStatement";
 import { FeaturedEditorial } from "@/components/home/FeaturedEditorial";
 import { BrandStory } from "@/components/home/BrandStory";
+import { ClosingStatement } from "@/components/home/ClosingStatement";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Container } from "@/components/ui/Container";
 
@@ -42,11 +44,29 @@ export default async function HomePage() {
         </Container>
       )}
 
+      {/* Section order follows the brand refresh: The New Edit, then
+          The Paege Favourites, then The Edit (categories), then the
+          standalone PAEGE / Part of You moment — the Slow Fashion
+          banner and "Less, but better" story keep their prior
+          relative position after that, ending on the full-width
+          closing statement right before the footer. */}
+      <ProductRail
+        title="The New Edit"
+        subtitle="Pieces you'll want to keep."
+        viewAllHref="/shop?filter=new-arrivals"
+        products={newArrivals}
+      />
+      <ProductRail
+        title="The Paege Favourites"
+        subtitle="The ones everyone's coming back to."
+        viewAllHref="/shop?filter=bestsellers"
+        products={bestsellers}
+      />
       <CategoryDiscovery categories={categories} />
-      <ProductRail title="Bestsellers" viewAllHref="/shop?filter=bestsellers" products={bestsellers} />
-      <ProductRail title="New Arrivals" viewAllHref="/shop?filter=new-arrivals" products={newArrivals} />
+      <PaegeStatement />
       <FeaturedEditorial />
       <BrandStory />
+      <ClosingStatement />
     </div>
   );
 }

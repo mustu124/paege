@@ -1,46 +1,58 @@
 import Link from "next/link";
 import { Search, ShoppingBag } from "lucide-react";
 
-import { getActiveCategories } from "@/lib/data/categories";
 import { Container } from "@/components/ui/Container";
 import { CartCountBadge } from "@/components/layout/CartCountBadge";
 import { MobileNav } from "@/components/layout/MobileNav";
 
-export async function SiteHeader() {
-  const categories = await getActiveCategories();
-
+// Nav copy per the brand refresh: Find Yours (shop all), The Edit
+// (category browsing, collapsed to one link — /shop itself still
+// filters by category, dynamically, nothing hard-coded), The New
+// Edit (new arrivals), The Paege Favourites (bestsellers), About
+// Paege. No longer needs categories fetched here at all — the
+// individual category links this used to render are gone in favor
+// of the single "The Edit" link.
+export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-cream/95 backdrop-blur-sm">
       <Container className="relative flex h-16 items-center justify-between md:h-20">
         {/* Left: nav — the full text nav needs real room to avoid
-            colliding with the centered logo (six links don't fit
-            between the left edge and center until ~xl), so the
-            hamburger (which already contains every link here, plus
-            Bestsellers) covers the whole md/lg range instead of just
-            mobile widths. MobileNav manages its own xl:hidden. */}
+            colliding with the centered logo, so the hamburger (which
+            already contains every link here) covers the whole md/lg
+            range instead of just mobile widths. MobileNav manages its
+            own xl:hidden. */}
         <div className="flex min-w-0 items-center">
-          <MobileNav categories={categories} />
+          <MobileNav />
           <nav aria-label="Primary" className="hidden items-center gap-4 xl:flex 2xl:gap-6">
             <Link
               href="/shop"
               className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
             >
-              All
+              Find Yours
             </Link>
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/shop?category=${category.slug}`}
-                className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
-              >
-                {category.name}
-              </Link>
-            ))}
+            <Link
+              href="/shop"
+              className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
+            >
+              The Edit
+            </Link>
             <Link
               href="/shop?filter=new-arrivals"
               className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
             >
-              New Arrivals
+              The New Edit
+            </Link>
+            <Link
+              href="/shop?filter=bestsellers"
+              className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
+            >
+              The Paege Favourites
+            </Link>
+            <Link
+              href="/about"
+              className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
+            >
+              About Paege
             </Link>
           </nav>
         </div>

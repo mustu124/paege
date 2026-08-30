@@ -11,7 +11,10 @@ export function CategoryDiscovery({ categories }: { categories: Category[] }) {
   return (
     <section className="py-16 md:py-24">
       <Container>
-        <h2 className="mb-8 font-serif text-3xl italic text-charcoal-900 md:text-4xl">Shop Collections</h2>
+        <div className="mb-8">
+          <h2 className="font-serif text-3xl italic text-charcoal-900 md:text-4xl">The Edit</h2>
+          <p className="mt-2 font-sans text-sm text-charcoal-500">Shop Collection</p>
+        </div>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
           {categories.map((category) => (
