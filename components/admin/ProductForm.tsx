@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import type { Category } from "@/lib/data/categories";
 import type { Database } from "@/lib/types/database";
 import { createProductAction, updateProductAction } from "@/app/(admin)/admin/products/actions";
+import { parseRupeesToPaise } from "@/lib/utils";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
@@ -32,6 +33,15 @@ export function ProductForm({ categories, product }: ProductFormProps) {
   const [sizeInput, setSizeInput] = useState("");
   const [quantityInput, setQuantityInput] = useState("");
 
+  // Admins think and are quoted prices in rupees, not paise — these
+  // fields collect rupee amounts and get converted to integer paise
+  // only at submit time (storage/schema stay paise throughout, see
+  // parseRupeesToPaise). Typing "1" here means ₹1, never ₹0.01.
+  const [priceRupees, setPriceRupees] = useState(product ? String(product.price_paise / 100) : "");
+  const [compareAtPriceRupees, setCompareAtPriceRupees] = useState(
+    product?.compare_at_price_paise != null ? String(product.compare_at_price_paise / 100) : "",
+  );
+
   function addVariant() {
     const size = sizeInput.trim().toUpperCase();
     if (!size) return;
@@ -49,6 +59,10 @@ export function ProductForm({ categories, product }: ProductFormProps) {
   function onSubmit(formData: FormData) {
     if (pending) return;
     setError(null);
+    formData.set("pricePaise", String(parseRupeesToPaise(priceRupees)));
+    if (compareAtPriceRupees.trim() !== "") {
+      formData.set("compareAtPricePaise", String(parseRupeesToPaise(compareAtPriceRupees)));
+    }
     if (!product && variants.length > 0) {
       formData.set("variants", JSON.stringify(variants));
     }
@@ -79,17 +93,23 @@ export function ProductForm({ categories, product }: ProductFormProps) {
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Input
-          name="pricePaise"
+          name="priceRupees"
           type="number"
-          label="Price (paise)"
-          defaultValue={product?.price_paise}
+          step="0.01"
+          min="0"
+          label="Price (₹)"
+          value={priceRupees}
+          onChange={(e) => setPriceRupees(e.target.value)}
           required
         />
         <Input
-          name="compareAtPricePaise"
+          name="compareAtPriceRupees"
           type="number"
-          label="Compare-at Price (paise, optional)"
-          defaultValue={product?.compare_at_price_paise ?? ""}
+          step="0.01"
+          min="0"
+          label="Compare-at Price (₹, optional)"
+          value={compareAtPriceRupees}
+          onChange={(e) => setCompareAtPriceRupees(e.target.value)}
         />
       </section>
 

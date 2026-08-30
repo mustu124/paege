@@ -20,6 +20,7 @@ interface CartState {
   addItem: (item: Omit<CartItem, "quantity">, quantity: number) => void;
   removeItem: (variantId: string) => void;
   setQuantity: (variantId: string, quantity: number) => void;
+  syncPrice: (variantId: string, unitPricePaise: number) => void;
   clear: () => void;
   setHasHydrated: (value: boolean) => void;
 }
@@ -53,6 +54,19 @@ export const useCartStore = create<CartState>()(
         set((state) => ({
           items: state.items.map((i) => (i.variantId === variantId ? { ...i, quantity } : i)),
         })),
+      // Corrects a price that went stale in localStorage since the item
+      // was added (the admin changed it in the meantime) — called after
+      // a live revalidation, so every price shown from here on (cart
+      // subtotal, checkout summary/total) reflects the real current
+      // price instead of whatever was cached at add-to-cart time.
+      syncPrice: (variantId, unitPricePaise) =>
+        set((state) => {
+          const existing = state.items.find((i) => i.variantId === variantId);
+          if (!existing || existing.unitPricePaise === unitPricePaise) return state;
+          return {
+            items: state.items.map((i) => (i.variantId === variantId ? { ...i, unitPricePaise } : i)),
+          };
+        }),
       clear: () => set({ items: [] }),
       setHasHydrated: (value) => set({ hasHydrated: value }),
     }),

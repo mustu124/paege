@@ -14,6 +14,17 @@ export function formatPaise(paise: number, currency: string = "INR") {
   }).format(amount);
 }
 
+// Inverse of formatPaise's underlying conversion — turns a rupee
+// amount an admin types (e.g. "499.50") into an integer paise value
+// for storage. Blank/invalid input becomes 0 rather than NaN, so an
+// empty field behaves the same as it always has for the required
+// price field (server-side min(0) validation still catches it).
+export function parseRupeesToPaise(value: string): number {
+  const rupees = Number.parseFloat(value);
+  if (!Number.isFinite(rupees)) return 0;
+  return Math.round(rupees * 100);
+}
+
 // Turns a product name into a URL-safe slug: lowercase, non-alphanumeric
 // runs collapsed to a single hyphen, no leading/trailing hyphen. Doesn't
 // guarantee uniqueness on its own — the caller is responsible for

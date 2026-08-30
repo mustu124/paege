@@ -36,6 +36,7 @@ export function CheckoutForm() {
   const items = useCartStore((s) => s.items);
   const hasHydrated = useCartStore((s) => s.hasHydrated);
   const clear = useCartStore((s) => s.clear);
+  const syncPrice = useCartStore((s) => s.syncPrice);
 
   const [stage, setStage] = useState<Stage>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +58,29 @@ export function CheckoutForm() {
     if (orderCompletedRef.current) return;
     if (hasHydrated && items.length === 0) router.replace("/cart");
   }, [hasHydrated, items.length, router]);
+
+  // A cart can arrive here still holding prices cached at add-to-cart
+  // time — if the admin changed a price since, the summary/total shown
+  // below would otherwise silently disagree with what Razorpay actually
+  // charges once "Pay Now" recomputes the amount server-side.
+  const variantKey = items.map((i) => i.variantId).join(",");
+  useEffect(() => {
+    if (!hasHydrated || items.length === 0) return;
+    let cancelled = false;
+    validateCartAction(items.map((i) => i.variantId)).then((results) => {
+      if (cancelled) return;
+      for (const item of items) {
+        const result = results.find((r) => r.variantId === item.variantId);
+        if (result?.currentPricePaise != null && result.currentPricePaise !== item.unitPricePaise) {
+          syncPrice(item.variantId, result.currentPricePaise);
+        }
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasHydrated, variantKey]);
 
   useEffect(() => {
     if (document.getElementById("razorpay-checkout-js")) return;

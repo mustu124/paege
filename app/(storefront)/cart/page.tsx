@@ -19,6 +19,7 @@ export default function CartPage() {
   const hasHydrated = useCartStore((s) => s.hasHydrated);
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
+  const syncPrice = useCartStore((s) => s.syncPrice);
 
   const [validation, setValidation] = useState<Map<string, CartValidationItem> | null>(null);
   const [validating, setValidating] = useState(false);
@@ -40,11 +41,16 @@ export default function CartPage() {
 
       // Auto-cap quantities that now exceed live low-stock counts —
       // otherwise the checkout attempt would just fail server-side
-      // for a case we can already see coming.
+      // for a case we can already see coming. Also correct any price
+      // that's gone stale in localStorage since the item was added, so
+      // the subtotal shown here (and on checkout) matches reality.
       for (const item of items) {
         const result = map.get(item.variantId);
         if (result?.status === "low_stock" && result.lowStockQuantity && item.quantity > result.lowStockQuantity) {
           setQuantity(item.variantId, result.lowStockQuantity);
+        }
+        if (result?.currentPricePaise != null && result.currentPricePaise !== item.unitPricePaise) {
+          syncPrice(item.variantId, result.currentPricePaise);
         }
       }
 
