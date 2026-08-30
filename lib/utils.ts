@@ -14,6 +14,19 @@ export function formatPaise(paise: number, currency: string = "INR") {
   }).format(amount);
 }
 
+// Turns a product name into a URL-safe slug: lowercase, non-alphanumeric
+// runs collapsed to a single hyphen, no leading/trailing hyphen. Doesn't
+// guarantee uniqueness on its own — the caller is responsible for
+// checking the result against existing rows and disambiguating
+// (see createProductAction's collision handling).
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 const SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL"];
 
 // Canonical apparel-size ordering (not alphabetical, which would

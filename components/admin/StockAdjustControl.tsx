@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Minus, Plus } from "lucide-react";
 
 import { adjustStockAction } from "@/app/(admin)/admin/inventory/actions";
@@ -12,8 +12,19 @@ export function StockAdjustControl({ variantId, quantity }: { variantId: string;
   const [setValue, setSetValue] = useState(String(quantity));
   const [reason, setReason] = useState("");
 
+  // Keep the editable field in sync with the authoritative quantity —
+  // it changes after every apply (server revalidates and passes a new
+  // `quantity` prop down), including ones triggered by the +/- buttons.
+  useEffect(() => {
+    setSetValue(String(quantity));
+  }, [quantity]);
+
   function apply(newQuantity: number, defaultReason: string) {
     if (pending) return;
+    if (!Number.isInteger(newQuantity) || newQuantity < 0) {
+      setError("Enter a valid, non-negative whole number.");
+      return;
+    }
     setError(null);
     startTransition(async () => {
       const result = await adjustStockAction(variantId, newQuantity, reason.trim() || defaultReason);
@@ -35,9 +46,20 @@ export function StockAdjustControl({ variantId, quantity }: { variantId: string;
           >
             <Minus size={12} strokeWidth={1.5} />
           </button>
-          <span className={cn("w-12 text-center font-sans text-sm tabular-nums", pending && "opacity-50")}>
-            {quantity}
-          </span>
+          <input
+            type="number"
+            min={0}
+            value={setValue}
+            disabled={pending}
+            onChange={(e) => setSetValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") apply(Number(setValue), "Manual set");
+            }}
+            className={cn(
+              "w-14 border-0 bg-transparent px-1 py-2 text-center font-sans text-sm tabular-nums text-charcoal-900 outline-none",
+              pending && "opacity-50",
+            )}
+          />
           <button
             type="button"
             aria-label="Increase stock by 1"
@@ -49,13 +71,6 @@ export function StockAdjustControl({ variantId, quantity }: { variantId: string;
           </button>
         </div>
 
-        <input
-          type="number"
-          min={0}
-          value={setValue}
-          onChange={(e) => setSetValue(e.target.value)}
-          className="w-20 border border-border bg-cream-50 px-2 py-1.5 font-sans text-sm text-charcoal-900 outline-none focus:border-charcoal-900"
-        />
         <button
           type="button"
           disabled={pending}

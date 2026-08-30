@@ -7,15 +7,15 @@ import { requireAdmin } from "@/lib/auth/require-admin";
 import { logAdminAction } from "@/lib/auth/log-admin-action";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { productSchema, altTextSchema } from "@/lib/validation/admin.schema";
+import { productSchema, altTextSchema, initialVariantsSchema } from "@/lib/validation/admin.schema";
 import { resolveImageInput } from "@/lib/admin/resolve-image-input";
 import { isStoragePath } from "@/lib/storage";
+import { slugify } from "@/lib/utils";
 import type { ActionResult } from "@/lib/types/admin-actions";
 
 function parseProductForm(formData: FormData) {
   return productSchema.safeParse({
     name: formData.get("name"),
-    slug: formData.get("slug"),
     categoryId: formData.get("categoryId"),
     productType: formData.get("productType") || undefined,
     colour: formData.get("colour") || undefined,
@@ -36,7 +36,6 @@ function productRowFromInput(data: ReturnType<typeof parseProductForm>["data"]) 
   if (!data) throw new Error("unreachable");
   return {
     name: data.name,
-    slug: data.slug,
     category_id: data.categoryId,
     product_type: data.productType ?? null,
     colour: data.colour ?? null,
@@ -53,21 +52,80 @@ function productRowFromInput(data: ReturnType<typeof parseProductForm>["data"]) 
   };
 }
 
+// Derives a URL slug from the product name and disambiguates against
+// existing rows (name, name-2, name-3, ...). Slugs are otherwise
+// never admin-editable — set once at creation, left alone on every
+// later edit so existing PDP links never break.
+async function generateUniqueProductSlug(admin: ReturnType<typeof createAdminClient>, name: string): Promise<string> {
+  const base = slugify(name) || "product";
+  let candidate = base;
+  let attempt = 2;
+  // Bounded by how many products currently collide on this base slug —
+  // in practice this loops at most a handful of times.
+  while (true) {
+    const { data } = await admin.from("products").select("id").eq("slug", candidate).maybeSingle();
+    if (!data) return candidate;
+    candidate = `${base}-${attempt}`;
+    attempt += 1;
+  }
+}
+
 export async function createProductAction(formData: FormData): Promise<ActionResult> {
   await requireAdmin();
 
   const parsed = parseProductForm(formData);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
 
+  let variants: { size: string; quantity: number }[] = [];
+  const variantsRaw = formData.get("variants");
+  if (typeof variantsRaw === "string" && variantsRaw.trim() !== "") {
+    let variantsJson: unknown;
+    try {
+      variantsJson = JSON.parse(variantsRaw);
+    } catch {
+      return { error: "Invalid sizes/stock data." };
+    }
+    const parsedVariants = initialVariantsSchema.safeParse(variantsJson);
+    if (!parsedVariants.success) {
+      return { error: parsedVariants.error.issues[0]?.message ?? "Invalid sizes/stock data." };
+    }
+    variants = parsedVariants.data;
+  }
+
   const admin = createAdminClient();
-  const { data, error } = await admin.from("products").insert(productRowFromInput(parsed.data)).select("id").single();
+  const slug = await generateUniqueProductSlug(admin, parsed.data.name);
+  const { data, error } = await admin
+    .from("products")
+    .insert({ ...productRowFromInput(parsed.data), slug })
+    .select("id")
+    .single();
 
-  if (error) return { error: error.code === "23505" ? "That slug is already in use." : error.message };
+  if (error) return { error: error.message };
 
-  await logAdminAction("product.create", "product", data.id, { name: parsed.data.name });
+  if (variants.length > 0) {
+    const { data: insertedVariants, error: variantError } = await admin
+      .from("product_variants")
+      .insert(variants.map((v) => ({ product_id: data.id, size: v.size })))
+      .select("id, size");
+
+    if (!variantError && insertedVariants) {
+      const quantityBySize = new Map(variants.map((v) => [v.size, v.quantity]));
+      const inventoryRows = insertedVariants.map((v) => ({
+        variant_id: v.id,
+        quantity: quantityBySize.get(v.size) ?? 0,
+      }));
+      // Best-effort: the product itself is already created either way,
+      // so a partial variant/inventory failure here doesn't block
+      // moving on — remaining sizes/stock can always be added from the
+      // edit page afterward.
+      await admin.from("inventory").insert(inventoryRows);
+    }
+  }
+
+  await logAdminAction("product.create", "product", data.id, { name: parsed.data.name, slug });
   revalidatePath("/admin/products");
   revalidatePath("/shop");
-  redirect(`/admin/products/${data.id}`);
+  redirect("/admin/products");
 }
 
 export async function updateProductAction(id: string, formData: FormData): Promise<ActionResult> {
@@ -77,16 +135,21 @@ export async function updateProductAction(id: string, formData: FormData): Promi
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
 
   const admin = createAdminClient();
+
+  // Slug is immutable after creation — fetch the existing one so the
+  // storefront PDP path can still be revalidated.
+  const { data: existing } = await admin.from("products").select("slug").eq("id", id).single();
+
   const { error } = await admin.from("products").update(productRowFromInput(parsed.data)).eq("id", id);
 
-  if (error) return { error: error.code === "23505" ? "That slug is already in use." : error.message };
+  if (error) return { error: error.message };
 
   await logAdminAction("product.update", "product", id, parsed.data);
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${id}`);
   revalidatePath("/shop");
-  revalidatePath(`/product/${parsed.data.slug}`);
-  return {};
+  if (existing?.slug) revalidatePath(`/product/${existing.slug}`);
+  redirect("/admin/products");
 }
 
 // "Delete" is always archival — is_active=false. order_items references

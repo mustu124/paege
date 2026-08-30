@@ -37,7 +37,6 @@ export type CategoryInput = z.infer<typeof categorySchema>;
 
 export const productSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
-  slug: slugSchema,
   categoryId: z.string().uuid("Select a category"),
   productType: z.string().trim().optional(),
   colour: z.string().trim().optional(),
@@ -54,6 +53,23 @@ export const productSchema = z.object({
 });
 
 export type ProductInput = z.infer<typeof productSchema>;
+
+// Initial sizes + stock submitted alongside product creation — matches
+// the same size-label pattern addVariantAction enforces on its own
+// (short apparel-size-like label), so a size added here behaves
+// exactly like one added later from the edit page.
+export const initialVariantSchema = z.object({
+  size: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .regex(/^[A-Za-z0-9.]{1,10}$/, "Enter a short size label (e.g. XS, M, 32)"),
+  quantity: z.coerce.number().int().min(0, "Stock can't be negative"),
+});
+
+export const initialVariantsSchema = z.array(initialVariantSchema).max(20);
+
+export type InitialVariantInput = z.infer<typeof initialVariantSchema>;
 
 // A slide's CTA destination is rendered directly as a <Link href> —
 // must be a relative path or a real http(s) URL, never a
