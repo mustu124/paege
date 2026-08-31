@@ -336,6 +336,19 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["site_settings"]["Row"]>;
         Relationships: [];
       };
+      site_images: {
+        Row: {
+          key: string;
+          storage_path: string | null;
+          alt_text: string | null;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["site_images"]["Row"]> & {
+          key: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["site_images"]["Row"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

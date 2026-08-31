@@ -8,6 +8,7 @@ import {
   Boxes,
   FolderTree,
   Image as ImageIcon,
+  Images,
   Star,
   ClipboardList,
 } from "lucide-react";
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { href: "/admin/inventory", label: "Inventory", icon: Boxes },
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
   { href: "/admin/homepage", label: "Homepage", icon: ImageIcon },
+  { href: "/admin/site-images", label: "Site Images", icon: Images },
   { href: "/admin/featured", label: "Bestsellers & New Arrivals", icon: Star },
   { href: "/admin/orders", label: "Orders", icon: ClipboardList },
 ];

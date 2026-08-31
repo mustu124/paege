@@ -1,15 +1,17 @@
 import Image from "next/image";
 
+import type { SiteImageRow } from "@/lib/data/site-images";
+import { getStorageUrl } from "@/lib/storage";
 import { Container } from "@/components/ui/Container";
 
-export function BrandStory() {
+export function BrandStory({ image }: { image: SiteImageRow | null }) {
   return (
     <section className="py-16 md:py-24">
       <Container className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-16">
         <div className="relative aspect-[4/5] w-full overflow-hidden md:order-2">
           <Image
-            src="https://escazdqsbqwhaedygbhn.supabase.co/storage/v1/object/public/homepage-slides/static/brand-story-1787622994725.jpg"
-            alt="Detail of fabric and stitching, representing PAEGE's considered approach to craft"
+            src={getStorageUrl("homepage-slides", image?.storage_path)}
+            alt={image?.alt_text ?? "Detail of fabric and stitching, representing PAEGE's considered approach to craft"}
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover"

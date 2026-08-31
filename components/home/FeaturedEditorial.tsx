@@ -1,17 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import type { SiteImageRow } from "@/lib/data/site-images";
+import { getStorageUrl } from "@/lib/storage";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 
-export function FeaturedEditorial() {
+export function FeaturedEditorial({ image }: { image: SiteImageRow | null }) {
   return (
     <section className="py-16 md:py-24">
       <Container>
         <div className="relative aspect-[4/5] w-full overflow-hidden md:aspect-[16/7]">
           <Image
-            src="https://escazdqsbqwhaedygbhn.supabase.co/storage/v1/object/public/homepage-slides/static/featured-editorial-1787622993739.jpg"
-            alt="Featured edit"
+            src={getStorageUrl("homepage-slides", image?.storage_path)}
+            alt={image?.alt_text ?? "Featured edit"}
             fill
             sizes="100vw"
             className="object-cover"

@@ -1,6 +1,7 @@
 import { getActiveHomepageSlides } from "@/lib/data/homepage-slides";
 import { getActiveCategories } from "@/lib/data/categories";
 import { getBestsellers, getNewArrivals } from "@/lib/data/products";
+import { getSiteImages } from "@/lib/data/site-images";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { CategoryDiscovery } from "@/components/home/CategoryDiscovery";
 import { ProductRail } from "@/components/home/ProductRail";
@@ -12,12 +13,13 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Container } from "@/components/ui/Container";
 
 export default async function HomePage() {
-  const [desktopSlides, mobileSlides, categories, bestsellers, newArrivals] = await Promise.all([
+  const [desktopSlides, mobileSlides, categories, bestsellers, newArrivals, siteImages] = await Promise.all([
     getActiveHomepageSlides("desktop"),
     getActiveHomepageSlides("mobile"),
     getActiveCategories(),
     getBestsellers(),
     getNewArrivals(),
+    getSiteImages(),
   ]);
 
   return (
@@ -64,8 +66,8 @@ export default async function HomePage() {
       />
       <CategoryDiscovery categories={categories} />
       <PaegeStatement />
-      <FeaturedEditorial />
-      <BrandStory />
+      <FeaturedEditorial image={siteImages.featured_editorial} />
+      <BrandStory image={siteImages.brand_story} />
       <ClosingStatement />
     </div>
   );

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Paperclip } from "lucide-react";
 
+import { getSiteImages } from "@/lib/data/site-images";
+import { getStorageUrl } from "@/lib/storage";
 import { Container } from "@/components/ui/Container";
 
 export const metadata: Metadata = { title: "About Us" };
@@ -17,14 +19,17 @@ const TORN_EDGE = {
 
 const NOTES = ["MADE WITH INTENTION.", "LIMITED BY DESIGN.", "FEWER PIECES, MORE THOUGHT.", "EVERY PIECE BECOMES PART OF YOUR STORY."];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const siteImages = await getSiteImages();
+  const aboutImage = siteImages.about_page;
+
   return (
     <Container className="py-16 md:py-24">
       <div className="relative mx-auto flex max-w-sm flex-col items-center md:max-w-none md:flex-row md:items-end md:justify-center md:gap-4">
         <div className="relative aspect-[4/5] w-56 shrink-0 overflow-hidden grayscale md:w-72">
           <Image
-            src="https://escazdqsbqwhaedygbhn.supabase.co/storage/v1/object/public/homepage-slides/static/brand-story-1787622994725.jpg"
-            alt="Detail of fabric and stitching, representing PAEGE's considered approach to craft"
+            src={getStorageUrl("homepage-slides", aboutImage?.storage_path)}
+            alt={aboutImage?.alt_text ?? "Detail of fabric and stitching, representing PAEGE's considered approach to craft"}
             fill
             sizes="(min-width: 768px) 30vw, 60vw"
             className="object-cover"
