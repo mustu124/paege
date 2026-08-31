@@ -161,7 +161,7 @@ export function PurchasePanel({
 
       <div className="flex flex-col gap-3">
         <Button variant="primary" size="lg" disabled={isSoldOut} onClick={handleAddToCart}>
-          {isSoldOut ? "Out of Stock" : justAdded ? "Added to Bag" : `Add to Cart — ${formatPaise(unitPricePaise * quantity)}`}
+          {isSoldOut ? "Out of Stock" : justAdded ? "Added to PAEGE" : `Add to PAEGE — ${formatPaise(unitPricePaise * quantity)}`}
         </Button>
         {!isSoldOut && (
           <Button variant="outline" size="lg" onClick={handleBuyNow}>

@@ -1,40 +1,36 @@
 import Link from "next/link";
-import { Search, ShoppingBag } from "lucide-react";
+import { Heart, Search, ShoppingBag } from "lucide-react";
 
 import { Container } from "@/components/ui/Container";
 import { CartCountBadge } from "@/components/layout/CartCountBadge";
+import { WishlistCountBadge } from "@/components/layout/WishlistCountBadge";
+import { EditsDropdown } from "@/components/layout/EditsDropdown";
 import { MobileNav } from "@/components/layout/MobileNav";
 
-// Nav copy per the brand refresh: Find Yours (shop all), The Edit
-// (category browsing, collapsed to one link — /shop itself still
-// filters by category, dynamically, nothing hard-coded), The New
-// Edit (new arrivals), The Paege Favourites (bestsellers), About
-// Paege. No longer needs categories fetched here at all — the
-// individual category links this used to render are gone in favor
-// of the single "The Edit" link.
+// Nav per the client's header spec: Home, The New Edit, The Edits
+// (dropdown — Find Yours/Dresses/Tops/Bottoms), About Paege. Left-
+// aligned logo (not centered) — a dedicated nav track next to it
+// avoids the earlier centered-logo/nav collision entirely, by
+// construction, instead of needing a breakpoint to paper over it.
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-cream/95 backdrop-blur-sm">
-      <Container className="relative flex h-16 items-center justify-between md:h-20">
-        {/* Left: nav — the full text nav needs real room to avoid
-            colliding with the centered logo, so the hamburger (which
-            already contains every link here) covers the whole md/lg
-            range instead of just mobile widths. MobileNav manages its
-            own xl:hidden. */}
-        <div className="flex min-w-0 items-center">
+      <div className="bg-burgundy py-2 text-center">
+        <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-cream-50">A Part of You.</p>
+      </div>
+
+      <Container className="flex h-16 items-center justify-between md:h-20">
+        <div className="flex min-w-0 items-center gap-8">
           <MobileNav />
-          <nav aria-label="Primary" className="hidden items-center gap-4 xl:flex 2xl:gap-6">
+          <Link href="/" className="shrink-0 font-serif text-2xl italic tracking-wide text-burgundy md:text-3xl">
+            PAEGE
+          </Link>
+          <nav aria-label="Primary" className="hidden items-center gap-6 lg:flex">
             <Link
-              href="/shop"
+              href="/"
               className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
             >
-              Find Yours
-            </Link>
-            <Link
-              href="/shop"
-              className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
-            >
-              The Edit
+              Home
             </Link>
             <Link
               href="/shop?filter=new-arrivals"
@@ -42,12 +38,7 @@ export function SiteHeader() {
             >
               The New Edit
             </Link>
-            <Link
-              href="/shop?filter=bestsellers"
-              className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
-            >
-              The Paege Favourites
-            </Link>
+            <EditsDropdown />
             <Link
               href="/about"
               className="link-underline whitespace-nowrap font-sans text-xs uppercase tracking-wider text-charcoal-900"
@@ -57,20 +48,13 @@ export function SiteHeader() {
           </nav>
         </div>
 
-        {/* Center: logo — absolutely centered on the viewport so it
-            never has to fight the nav/icons for a share of a grid
-            track (the two sides are rarely equal-width in content). */}
-        <Link
-          href="/"
-          className="absolute left-1/2 -translate-x-1/2 font-serif text-2xl italic tracking-wide text-burgundy md:text-3xl"
-        >
-          PAEGE
-        </Link>
-
-        {/* Right: actions */}
         <div className="flex shrink-0 items-center justify-end gap-4 text-charcoal-900 md:gap-5">
-          <Link href="/shop" aria-label="Search" className="hidden xl:block">
+          <Link href="/shop" aria-label="Search" className="hidden lg:block">
             <Search size={19} strokeWidth={1.5} />
+          </Link>
+          <Link href="/wishlist" aria-label="Almost Yours (bookmarked items)" className="flex items-center">
+            <Heart size={19} strokeWidth={1.5} />
+            <WishlistCountBadge />
           </Link>
           <Link href="/cart" aria-label="Cart" className="flex items-center">
             <ShoppingBag size={19} strokeWidth={1.5} />

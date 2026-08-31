@@ -9,7 +9,7 @@ export function SiteFooter() {
         <div className="col-span-2 md:col-span-1">
           <p className="font-serif text-2xl italic text-burgundy">PAEGE</p>
           <p className="mt-4 max-w-[220px] font-sans text-sm leading-relaxed text-charcoal-500">
-            Considered clothing for the modern wardrobe.
+            A Part of You.
           </p>
         </div>
 
@@ -31,7 +31,12 @@ export function SiteFooter() {
           <Link href="/about" className="font-sans text-sm text-charcoal-500 hover:text-charcoal-900">
             About Paege
           </Link>
-          <span className="font-sans text-sm text-charcoal-500">Shipping &amp; Returns</span>
+          <Link href="/shipping-returns" className="font-sans text-sm text-charcoal-500 hover:text-charcoal-900">
+            Shipping &amp; Returns
+          </Link>
+          <Link href="/wishlist" className="font-sans text-sm text-charcoal-500 hover:text-charcoal-900">
+            Almost Yours
+          </Link>
           <span className="font-sans text-sm text-charcoal-500">Contact</span>
         </div>
       </Container>

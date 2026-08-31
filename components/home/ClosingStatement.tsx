@@ -20,7 +20,7 @@ export function ClosingStatement() {
 
         <p className="mt-8 font-sans text-sm text-cream-50/90">Choose pieces that become part of it.</p>
 
-        <p className="mt-10 font-sans text-xs uppercase tracking-widest text-cream-50/70">PAEGE — Part of You.</p>
+        <p className="mt-10 font-sans text-xs uppercase tracking-widest text-cream-50/70">PAEGE — A Part of You.</p>
       </Container>
     </section>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getProductBySlug, getRelatedProducts } from "@/lib/data/product-detail";
@@ -8,6 +9,7 @@ import { Disclosure } from "@/components/ui/Disclosure";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { PurchasePanel } from "@/components/product/PurchasePanel";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
+import { WishlistButton } from "@/components/product/WishlistButton";
 import { formatPaise } from "@/lib/utils";
 
 interface ProductPageProps {
@@ -57,7 +59,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {[product.categoryName, product.product_type].filter(Boolean).join(" · ")}
             </p>
           )}
-          <h1 className="mt-2 font-serif text-3xl italic text-charcoal-900 md:text-4xl">{product.name}</h1>
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="mt-2 font-serif text-3xl italic text-charcoal-900 md:text-4xl">{product.name}</h1>
+            <WishlistButton
+              item={{
+                productId: product.id,
+                productSlug: product.slug,
+                productName: product.name,
+                pricePaise: product.price_paise,
+                imagePath: product.images[0]?.storagePath ?? null,
+              }}
+              className="mt-2 shrink-0 border border-border bg-transparent hover:border-burgundy"
+              size={18}
+            />
+          </div>
 
           <div className="mt-3 flex items-baseline gap-3">
             <p className="font-sans text-xl text-charcoal-900">{formatPaise(product.price_paise)}</p>
@@ -101,9 +116,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
             )}
             <Disclosure title="Shipping & Returns">
               <p>
-                Orders are carefully packed and dispatched after processing. You&apos;ll
-                receive tracking details by email once your order ships. See your order
-                confirmation for return and exchange details.
+                Shipping takes 10–15 days from the date of order. All orders are final
+                sale — we only accept exchanges if a piece arrives damaged or defective.{" "}
+                <Link href="/shipping-returns" className="link-underline text-charcoal-900">
+                  Read the full policy
+                </Link>
+                .
               </p>
             </Disclosure>
           </div>

@@ -4,6 +4,7 @@ import type { ProductSummary } from "@/lib/data/products";
 import { getStorageUrl } from "@/lib/storage";
 import { formatPaise } from "@/lib/utils";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { WishlistButton } from "@/components/product/WishlistButton";
 
 // One badge, max — priority: sold out > new > bestseller. Showing
 // several at once reads as noisy rather than informative.
@@ -37,26 +38,41 @@ export function ProductCard({ product }: { product: ProductSummary }) {
   const metaLine = [product.category_name, product.product_type].filter(Boolean).join(" · ");
 
   return (
-    <Link href={`/product/${product.slug}`} className="group block w-full shrink-0">
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-cream-100">
-        <SiteImage
-          src={imageUrl}
-          alt={product.name}
-          fill
-          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 40vw, 80vw"
-          className={`object-cover transition-transform duration-700 ease-editorial group-hover:scale-[1.03] ${
-            product.is_sold_out ? "opacity-60" : ""
-          }`}
-        />
-        <ProductBadge product={product} />
-      </div>
-      <div className="mt-3 flex flex-col gap-0.5">
-        {metaLine && (
-          <p className="font-sans text-[11px] uppercase tracking-wider text-charcoal-500">{metaLine}</p>
-        )}
-        <p className="font-sans text-sm text-charcoal-900">{product.name}</p>
-        <p className="font-sans text-sm text-charcoal-700">{formatPaise(product.price_paise)}</p>
-      </div>
-    </Link>
+    // The heart button is a sibling of the <Link>, not nested inside
+    // it — a button inside an anchor would fire both the wishlist
+    // toggle and the navigation on one tap.
+    <div className="group relative w-full shrink-0">
+      <Link href={`/product/${product.slug}`} className="block">
+        <div className="relative aspect-[4/5] w-full overflow-hidden bg-cream-100">
+          <SiteImage
+            src={imageUrl}
+            alt={product.name}
+            fill
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 40vw, 80vw"
+            className={`object-cover transition-transform duration-700 ease-editorial group-hover:scale-[1.03] ${
+              product.is_sold_out ? "opacity-60" : ""
+            }`}
+          />
+          <ProductBadge product={product} />
+        </div>
+        <div className="mt-3 flex flex-col gap-0.5">
+          {metaLine && (
+            <p className="font-sans text-[11px] uppercase tracking-wider text-charcoal-500">{metaLine}</p>
+          )}
+          <p className="font-sans text-sm text-charcoal-900">{product.name}</p>
+          <p className="font-sans text-sm text-charcoal-700">{formatPaise(product.price_paise)}</p>
+        </div>
+      </Link>
+      <WishlistButton
+        item={{
+          productId: product.id,
+          productSlug: product.slug,
+          productName: product.name,
+          pricePaise: product.price_paise,
+          imagePath: product.primary_image_path,
+        }}
+        className="absolute right-3 top-3"
+      />
+    </div>
   );
 }
