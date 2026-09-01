@@ -3,7 +3,7 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/types/database";
 
-export type SiteImageKey = "brand_story" | "featured_editorial" | "about_page";
+export type SiteImageKey = "featured_editorial" | "about_page";
 export type SiteImageRow = Database["public"]["Tables"]["site_images"]["Row"];
 
 // Every named slot fetched in one query — there are only a handful,
@@ -13,7 +13,6 @@ export type SiteImageRow = Database["public"]["Tables"]["site_images"]["Row"];
 // back to the placeholder image for that.
 export async function getSiteImages(): Promise<Record<SiteImageKey, SiteImageRow | null>> {
   const empty: Record<SiteImageKey, SiteImageRow | null> = {
-    brand_story: null,
     featured_editorial: null,
     about_page: null,
   };

@@ -13,7 +13,6 @@ export const metadata: Metadata = { title: "Site Images" };
 // of read from site_images.
 const SLOTS: { key: SiteImageKey; label: string; usedOn: string }[] = [
   { key: "featured_editorial", label: "Slow Fashion Banner", usedOn: "Homepage — full-width banner below The Edit" },
-  { key: "brand_story", label: "Our Approach Photo", usedOn: "Homepage — \"Less, but better\" section" },
   { key: "about_page", label: "About Page Photo", usedOn: "About Us — opening note card" },
 ];
 

@@ -7,7 +7,6 @@ import { CategoryDiscovery } from "@/components/home/CategoryDiscovery";
 import { ProductRail } from "@/components/home/ProductRail";
 import { PaegeStatement } from "@/components/home/PaegeStatement";
 import { FeaturedEditorial } from "@/components/home/FeaturedEditorial";
-import { BrandStory } from "@/components/home/BrandStory";
 import { ClosingStatement } from "@/components/home/ClosingStatement";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Container } from "@/components/ui/Container";
@@ -49,9 +48,10 @@ export default async function HomePage() {
       {/* Section order follows the brand refresh: The New Edit, then
           The Paege Favourites, then The Edit (categories), then the
           standalone PAEGE / Part of You moment — the Slow Fashion
-          banner and "Less, but better" story keep their prior
-          relative position after that, ending on the full-width
-          closing statement right before the footer. */}
+          banner keeps its prior relative position after that ("Our
+          Approach" / "Less, but better" was removed per feedback),
+          ending on the full-width closing statement right before the
+          footer. */}
       <ProductRail
         title="The New Edit"
         subtitle="Pieces you'll want to keep."
@@ -67,7 +67,6 @@ export default async function HomePage() {
       <CategoryDiscovery categories={categories} />
       <PaegeStatement />
       <FeaturedEditorial image={siteImages.featured_editorial} />
-      <BrandStory image={siteImages.brand_story} />
       <ClosingStatement />
     </div>
   );
