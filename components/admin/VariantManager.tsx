@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 
 import type { VariantWithStock } from "@/lib/data/admin/products";
 import { addVariantAction, removeVariantAction } from "@/app/(admin)/admin/products/actions";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
 export function VariantManager({ productId, variants }: { productId: string; variants: VariantWithStock[] }) {
@@ -56,7 +57,7 @@ export function VariantManager({ productId, variants }: { productId: string; var
               aria-label={`Remove size ${variant.size}`}
               disabled={pending}
               onClick={() => onRemove(variant.id)}
-              className="p-1 text-charcoal-500 hover:text-burgundy"
+              className={cn("p-1 text-charcoal-500 hover:text-burgundy", pending && "opacity-40")}
             >
               <X size={16} strokeWidth={1.5} />
             </button>
