@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, ChevronRight, Menu, MessageCircle, Package, Sparkles, Truck, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -15,13 +15,6 @@ const EDITS_LINKS = [
   { href: "/shop?category=dresses", label: "Dresses" },
   { href: "/shop?category=tops", label: "Tops" },
   { href: "/shop?category=bottoms", label: "Bottoms" },
-];
-
-const INFO_ROWS = [
-  { icon: Sparkles, title: "Limited by Design", subtitle: "Made in small quantities." },
-  { icon: Package, title: "Part of You", subtitle: "Pieces that become part of your story." },
-  { icon: Truck, title: "Shipping", subtitle: "10–15 days delivery timeline." },
-  { icon: MessageCircle, title: "Need Help?", subtitle: "We're here for you." },
 ];
 
 export function MobileNav() {
@@ -138,18 +131,6 @@ export function MobileNav() {
           <ChevronRight size={16} strokeWidth={1.5} className="text-charcoal-500" />
         </Link>
       </nav>
-
-      <div className="flex flex-col gap-5 border-t border-border px-6 py-6">
-        {INFO_ROWS.map((row) => (
-          <div key={row.title} className="flex items-start gap-3">
-            <row.icon size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-burgundy" />
-            <div>
-              <p className="font-sans text-xs uppercase tracking-wider text-charcoal-900">{row.title}</p>
-              <p className="mt-0.5 font-sans text-xs text-charcoal-500">{row.subtitle}</p>
-            </div>
-          </div>
-        ))}
-      </div>
 
       <Link
         href="/shop"
