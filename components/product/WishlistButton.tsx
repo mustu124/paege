@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart } from "lucide-react";
+import { Bookmark } from "lucide-react";
 
 import { useWishlistStore, type WishlistItem } from "@/lib/store/wishlist";
 import { cn } from "@/lib/utils";
@@ -35,7 +35,7 @@ export function WishlistButton({ item, className, size = 16 }: WishlistButtonPro
         className,
       )}
     >
-      <Heart size={size} strokeWidth={1.5} className={hasHydrated && bookmarked ? "fill-burgundy text-burgundy" : ""} />
+      <Bookmark size={size} strokeWidth={1.5} className={hasHydrated && bookmarked ? "fill-burgundy text-burgundy" : ""} />
     </button>
   );
 }

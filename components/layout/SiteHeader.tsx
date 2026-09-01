@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Search, ShoppingBag } from "lucide-react";
+import { Bookmark, Search, ShoppingBag } from "lucide-react";
 
 import { Container } from "@/components/ui/Container";
 import { CartCountBadge } from "@/components/layout/CartCountBadge";
@@ -53,7 +53,7 @@ export function SiteHeader() {
             <Search size={19} strokeWidth={1.5} />
           </Link>
           <Link href="/wishlist" aria-label="Almost Yours (bookmarked items)" className="flex items-center">
-            <Heart size={19} strokeWidth={1.5} />
+            <Bookmark size={19} strokeWidth={1.5} />
             <WishlistCountBadge />
           </Link>
           <Link href="/cart" aria-label="Cart" className="flex items-center">
