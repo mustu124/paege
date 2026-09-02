@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth/require-admin";
 import { logAdminAction } from "@/lib/auth/log-admin-action";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveImageInput } from "@/lib/admin/resolve-image-input";
-import { altTextSchema } from "@/lib/validation/admin.schema";
+import { altTextSchema, supportContactSchema } from "@/lib/validation/admin.schema";
 import { isStoragePath } from "@/lib/storage";
 import type { SiteImageKey } from "@/lib/data/site-images";
 import type { ActionResult } from "@/lib/types/admin-actions";
@@ -59,6 +59,32 @@ export async function setSiteImageAction(key: SiteImageKey, formData: FormData):
   await logAdminAction("site_image.update", "site_image", null, { key });
   revalidatePath("/");
   revalidatePath("/about");
+  revalidatePath("/shipping-returns");
+  revalidatePath("/admin/site-images");
+  return {};
+}
+
+export async function setSupportContactAction(formData: FormData): Promise<ActionResult> {
+  await requireAdmin();
+
+  const parsed = supportContactSchema.safeParse({
+    email: formData.get("email"),
+    instagram: formData.get("instagram"),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+
+  const admin = createAdminClient();
+  const { error } = await admin.from("site_settings").upsert(
+    [
+      { key: "support_email", value: parsed.data.email },
+      { key: "support_instagram", value: parsed.data.instagram },
+    ],
+    { onConflict: "key" },
+  );
+  if (error) return { error: error.message };
+
+  await logAdminAction("support_contact.update", "site_setting", null, parsed.data);
+  revalidatePath("/shipping-returns");
   revalidatePath("/admin/site-images");
   return {};
 }

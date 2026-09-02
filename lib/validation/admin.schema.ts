@@ -94,3 +94,18 @@ export const homepageSlideSchema = z.object({
 });
 
 export type HomepageSlideInput = z.infer<typeof homepageSlideSchema>;
+
+// Customer-support contact details shown on the Shipping & Return
+// Policy page — both optional (an empty field just means that line
+// doesn't render on the storefront). The Instagram handle is stored
+// without its leading "@" — the storefront adds it back for display.
+export const supportContactSchema = z.object({
+  email: z.string().trim().toLowerCase().max(200).email("Enter a valid email address").or(z.literal("")),
+  instagram: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/^@/, ""))
+    .refine((v) => v === "" || /^[a-zA-Z0-9._]{1,30}$/.test(v), "Enter a valid Instagram handle (letters, numbers, dots, underscores)"),
+});
+
+export type SupportContactInput = z.infer<typeof supportContactSchema>;

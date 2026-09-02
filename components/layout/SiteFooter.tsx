@@ -34,9 +34,6 @@ export function SiteFooter() {
           <Link href="/shipping-returns" className="font-sans text-sm text-charcoal-500 hover:text-charcoal-900">
             Shipping &amp; Returns
           </Link>
-          <Link href="/wishlist" className="font-sans text-sm text-charcoal-500 hover:text-charcoal-900">
-            Almost Yours
-          </Link>
           <span className="font-sans text-sm text-charcoal-500">Contact</span>
         </div>
       </Container>
