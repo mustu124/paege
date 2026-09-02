@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/Container";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-border bg-cream">
+    <footer className="border-t border-border bg-cream">
       <Container className="grid grid-cols-2 gap-10 py-16 md:grid-cols-3">
         <div className="col-span-2 md:col-span-1">
           <p className="font-serif text-2xl italic text-burgundy">PAEGE</p>
