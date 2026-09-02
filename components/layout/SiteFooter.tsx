@@ -22,7 +22,7 @@ export function SiteFooter() {
             href="/shop?filter=new-arrivals"
             className="font-sans text-sm text-charcoal-500 hover:text-charcoal-900"
           >
-            New Arrivals
+            The New Edit
           </Link>
         </div>
 

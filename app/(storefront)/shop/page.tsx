@@ -57,7 +57,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   ]);
 
   const specialFilterLabel =
-    specialFilter === "new-arrivals" ? "New Arrivals" : specialFilter === "bestsellers" ? "Bestsellers" : null;
+    specialFilter === "new-arrivals" ? "The New Edit" : specialFilter === "bestsellers" ? "The Paege Favourites" : null;
   const title = result.categoryName ?? specialFilterLabel ?? "All Products";
 
   return (
